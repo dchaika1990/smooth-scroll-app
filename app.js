@@ -1,32 +1,61 @@
+import {animationObj} from './animation';
+
 const smoothScrollApp = {}
 
-smoothScrollApp.init = (options) => {
-    let {target, duration} = options;
-    let $target = document.querySelector(target);
-    let targetPosition = $target.getBoundingClientRect().top;
-    let startPosition = window.pageYOffset;
-    let distance = targetPosition - startPosition;
+smoothScrollApp.init = (options = {}, element) => {
+    const {target, duration, animationType = ''} = options;
+    if (target === undefined && element.getAttribute("href") === '') return
+    const $target = document.querySelector(target || element.getAttribute("href"));
+    const $animationType = animationType || element.dataset.scrollanimation || 'easeInOutQuad';
+
+    const $duration = duration || element.dataset.scrollduration || '1000';
+    const targetPosition = $target.getBoundingClientRect().top;
+    const startPosition = window.pageYOffset;
+    const distance = targetPosition - startPosition;
     let startTime = null;
 
-    function animation(currentTime){
+    function animation(currentTime) {
         if (!startTime) startTime = currentTime;
         let timeElapsed = currentTime - startTime;
-        let run = easeInOutQuad(timeElapsed, startPosition, distance, duration);
+        let run = animationObj[$animationType](timeElapsed, startPosition, distance, $duration);
         window.scrollTo(0, run);
-        if (timeElapsed < duration) requestAnimationFrame(animation);
-    }
-
-    function easeInOutQuad(t, b, c, d) {
-        t /= d/2;
-        if (t < 1) return c/2*t*t + b;
-        t--;
-        return -c/2 * (t*(t-2) - 1) + b;
+        if (timeElapsed < $duration) requestAnimationFrame(animation);
     }
 
     requestAnimationFrame(animation);
 }
 
-let section1 = document.querySelector('.section1');
-section1.addEventListener('click', function (){
-    smoothScroll('.section2', 2000);
-})
+smoothScrollApp.start = (options, smoothElements) => {
+    const appInit = () => {
+        smoothScrollApp.init(options, event.target)
+    }
+
+    const listenerDefault = (element, event) => {
+        element.addEventListener('click', (event) => {
+            if (event.target.dataset.scroll === 'true') {
+                appInit()
+            }
+        })
+    }
+
+    const listener = (element, event) => {
+        element.addEventListener('click', (event) => {
+            event.preventDefault();
+            appInit()
+        })
+    }
+
+    if (smoothElements) {
+        [].slice.call(document.querySelectorAll(smoothElements)).forEach(smoothElement => {
+            listener(smoothElement, event);
+        })
+    } else {
+        listenerDefault(document, event);
+    }
+
+}
+
+smoothScrollApp.start({
+    duration: '3000',
+    animationType: 'easeOutQuint'
+}, '.smoothTest')
