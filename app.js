@@ -1,4 +1,7 @@
-function smoothScroll(target, duration) {
+const smoothScrollApp = {}
+
+smoothScrollApp.init = (options) => {
+    let {target, duration} = options;
     let $target = document.querySelector(target);
     let targetPosition = $target.getBoundingClientRect().top;
     let startPosition = window.pageYOffset;

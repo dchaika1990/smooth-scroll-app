@@ -1,0 +1,23 @@
+{
+  "name": "smooth-scroll-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "animation.js",
+  "scripts": {
+    "serve": "parcel ./index.html -p 4000 --open",
+    "build": "parcel build ./src/index.html --no-source-maps"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dchaika1990/smooth-scroll-app.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dchaika1990/smooth-scroll-app/issues"
+  },
+  "homepage": "https://github.com/dchaika1990/smooth-scroll-app#readme",
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4"
+  }
+}
